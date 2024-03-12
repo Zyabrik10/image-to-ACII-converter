@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <!-- FONST -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Festive&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="./css/index.css">
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <a class="logo" href="">
+                ZayCon <span>1.0.0v</span>
+            </a>
+            <ul class="soc-list">
+                <li><a href="https://www.linkedin.com/in/alexander-mazurok-jfd/" target="_blank">Linkedin</a></li>
+                <li><a href="https://github.com/Zyabrik10/" target="_blank">Github</a></li>
+            </ul>
+        </div>
+    </header>
+    <main>
+        <section class="hero">
+            <div class="container">
+                <h1>Image to ASCII code</h1>
+                <label for="label-input">
+                    <div class="button">convert</div>
+                    <input id="label-input" name="label-input" class="input-file hidden" type="file">
+                </label>
+            </div>
+        </section>
+        <section class="convert">
+            <div class="container">
+                <h2 class="sec-sub-title">Output Text</h2>
+                <p>There is no ASCII code yet</p>
+                <div class="opt_text-con">
+                    <pre class="opt_text"></pre>
+                </div>
+            </div>
+        </section>
+        <section>
+            <div class="container">
+                <h2 class="sec-sub-title">Image and ouput image</h2>
+                <p>There are image and ouput image yet</p>
+                <ul class="images-list-init">
+                    <li>
+                        <img class="img_in" src="" alt="">
+                    </li>
+                    <li>
+                        <canvas class="canvas-no-color"></canvas>
+                    </li>
+                </ul>
+            </div>
+        </section>
+    </main>
+    <script src="./js/index.js"></script>
+    <!-- <script>
+        const input = document.querySelector("input[type=file]");
+        const img_in = document.querySelector(".img_in");
+        const opt_text = document.querySelector(".opt_text");
+
+        const canvas = document.querySelector("canvas");
+        const ctx = canvas.getContext("2d");
+
+        const mid = 255 / 2;
+
+        function convertToBase64(image) {
+            return new Promise((res, rej) => {
+                const fileReader = new FileReader();
+                fileReader.readAsDataURL(image);
+
+                fileReader.onload = () => res(fileReader.result);
+                fileReader.onerror = (error) => res(fileReader.error);
+            });
+        }
+
+        async function inputFileHandle() {
+            const image = this.files[0];
+            let imageBase64, img;
+
+            while (true) {
+                imageBase64 = await convertToBase64(image);
+
+                img = new Image();
+                img.src = imageBase64;
+                img_in.src = imageBase64;
+
+                if (img.width) {
+                    break;
+                }
+            }
+
+            canvas.width = img.width;
+            canvas.height = img.height;
+
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+            const text = imageToASCII();
+            opt_text.innerText = text;
+        }
+
+
+
+        function imageToASCII() {
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const pixels = imageData.data;
+            const arr = [];
+            let text = '';
+
+            for (let i = 0; i < canvas.height; i++) {
+                arr[i] = [];
+
+                for (let j = 0; j < canvas.width; j++) {
+                    const pixelIndex = i * canvas.width * 4 + j * 4;
+
+                    const red = pixels[pixelIndex];
+                    const green = pixels[pixelIndex + 1];
+                    const blue = pixels[pixelIndex + 2];
+
+                    const avargeColor = (red + green + blue) / 3;
+
+                    let color = 0;
+
+                    if (avargeColor >= mid) {
+                        color = 255;
+                    }
+
+                    pixels[pixelIndex] = color;
+                    pixels[pixelIndex + 1] = color;
+                    pixels[pixelIndex + 2] = color;
+                    pixels[pixelIndex + 3] = 255;
+
+                    arr[i].push(color);
+                }
+            }
+
+            imageData.data = pixels;
+
+            console.log(arr);
+
+            for (const element of arr) {
+                for (let j = 0; j < element.length; j++) {
+                    if (element[j]) {
+                        text += "   ";
+                    } else text += ' ■ ';
+                }
+
+                text += '\n';
+            }
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.putImageData(imageData, 0, 0);
+
+            return text;
+        }
+
+        input.addEventListener("change", inputFileHandle);
+    </script> -->
+</body>
+
+</html>
