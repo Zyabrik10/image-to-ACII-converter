@@ -1,6 +1,7 @@
 const input = document.querySelector("input[type=file]");
 const img_in = document.querySelector(".img_in");
 const opt_text = document.querySelector(".opt_text");
+const copy_button = document.querySelector(".copy-button");
 
 const canvas = document.querySelector("canvas");
 const ctx = canvas.getContext("2d");
@@ -26,27 +27,96 @@ async function inputFileHandle() {
 
     img = new Image();
     img.src = imageBase64;
-    img_in.src = imageBase64;
 
     if (img.width) {
       break;
     }
   }
 
+  img_in.src = imageBase64;
   canvas.width = img.width;
   canvas.height = img.height;
-
   ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-  const text = imageToASCII();
-  opt_text.innerText = text;
+  opt_text.innerText = imageToASCII(canvas);
 }
 
-function imageToASCII() {
+function imageToASCII(canvas) {
   const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
   const pixels = imageData.data;
-  const arr = [];
+  const arr = convertPixelsToBlackAndWhite(pixels);
+
+  imageData.data = pixels;
+
+  cutTopBottom(arr);
+  cutLeft(arr);
+  cutRight(arr);
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.putImageData(imageData, 0, 0);
+
+  return createTextForACII(arr);
+}
+
+function cutTopBottom(arr) {
+  for (let i = 0; i < arr.length; i++) {
+    let j = 0;
+
+    while (j < arr[i].length && arr[i][j] === 255) {
+      j++;
+    }
+
+    if (j === arr[i].length) {
+      arr.splice(i, 1);
+      i--;
+    }
+  }
+}
+
+function cutLeft(arr) {
+  for (let x = 0; x < arr[0].length; x++) {
+    let y = 0;
+
+    while (y < arr.length && arr[y][x] === 255) {
+      y++;
+    }
+
+    if (y === arr.length) {
+      for (let j = 0; j < arr.length; j++) {
+        arr[j].splice(x, 1);
+      }
+      x--;
+    } else break;
+  }
+}
+
+function cutRight(arr) {
+  for (let i = 0; i < arr.length; i++) {
+    let j = arr[i].length - 1;
+    while (j >= 0 && arr[i][j] === 255) {
+      arr[i].splice(j, 1);
+      j--;
+    }
+  }
+}
+
+function createTextForACII(arr) {
   let text = "";
+  for (const element of arr) {
+    for (let j = 0; j < element.length; j++) {
+      if (element[j] === 255) {
+        text += " ";
+      } else if (element[j] === 0) text += "·";
+    }
+
+    text += "\n";
+  }
+
+  return text;
+}
+
+function convertPixelsToBlackAndWhite(pixels) {
+  const arr = [];
 
   for (let i = 0; i < canvas.height; i++) {
     arr[i] = [];
@@ -61,7 +131,7 @@ function imageToASCII() {
       const avargeColor = (red + green + blue) / 3;
 
       let color = 0;
-      const offset = 20;
+      const offset = 0;
 
       if (avargeColor >= mid + offset) {
         color = 255;
@@ -76,24 +146,10 @@ function imageToASCII() {
     }
   }
 
-  imageData.data = pixels;
-
-  console.log(arr);
-
-  for (const element of arr) {
-    for (let j = 0; j < element.length; j++) {
-      if (element[j]) {
-        text += "   ";
-      } else text += " ■ ";
-    }
-
-    text += "\n";
-  }
-
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.putImageData(imageData, 0, 0);
-
-  return text;
+  return arr;
 }
 
 input.addEventListener("change", inputFileHandle);
+copy_button.addEventListener("click", () => {
+  navigator.clipboard.writeText(opt_text.innerText);
+});
