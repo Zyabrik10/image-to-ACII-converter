@@ -1,3 +1,8 @@
+// ⠀	⠁	⠂	⠃	⠄	⠅	⠆	⠇	⠈	⠉	⠊	⠋	⠌	⠍	⠎	⠏⠐
+//    ⠑	⠒	⠓	⠔	⠕	⠖	⠗	⠘	⠙	⠚	⠛	⠜	⠝	⠞	⠟⠠
+//  	⠡	⠢	⠣	⠤	⠥	⠦	⠧	⠨	⠩	⠪	⠫	⠬	⠭	⠮	⠯⠰
+//    ⠱	⠲	⠳	⠴	⠵	⠶	⠷	⠸	⠹	⠺	⠻	⠼	⠽	⠾	⠿ ⣿
+
 const input = document.querySelector("input[type=file]");
 const img_in = document.querySelector(".img_in");
 const opt_text = document.querySelector(".opt_text");
@@ -102,11 +107,11 @@ function cutRight(arr) {
 
 function createTextForACII(arr) {
   let text = "";
-  for (const element of arr) {
-    for (let j = 0; j < element.length; j++) {
-      if (element[j] === 255) {
-        text += " ";
-      } else if (element[j] === 0) text += "·";
+  for (let i = 0; i < arr.length; i += 1) {
+    for (let j = 0; j < arr[i].length; j += 1) {
+      if (arr[i][j] === 255) {
+        text += "⠀";
+      } else if (arr[i][j] === 0) text += "0";
     }
 
     text += "\n";
